@@ -79,3 +79,8 @@ fieldset.field { min-inline-size:0; }
   html, body {overflow:visible;}
   .actions {display:none!important;}
 }
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+}
