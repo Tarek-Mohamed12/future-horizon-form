@@ -74,12 +74,48 @@ fieldset.field { min-inline-size:0; }
   html, body {overflow:visible;}
   .actions {display:none!important;}
 }
+.topbar-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 110px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .school-logo {
     display: block;
-    width: 110px;
-    max-width: 50%;
+    width: 220px;
+    max-width: 100%;
     height: auto;
     object-fit: contain;
+}
+
+.back-link {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+@media (max-width: 768px) {
+    .topbar-content {
+        min-height: 85px;
+    }
+
+    .school-logo {
+        width: 150px;
+    }
+
+    .back-link {
+        font-size: 11px;
+        left: 5px;
+    }
 }
 
 @media (max-width: 768px) {
