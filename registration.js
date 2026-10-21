@@ -1,0 +1,37 @@
+(()=>{
+const form=document.getElementById('admissionForm'),steps=[...document.querySelectorAll('.step')],names=['بيانات الطالب','ولي الأمر','السكن والمواصلات','معلومات أخرى','التعهد والإقرارات'];
+const prev=document.getElementById('prevBtn'),next=document.getElementById('nextBtn'),finish=document.getElementById('finishBtn'),completion=document.getElementById('completion'),alertBox=document.getElementById('formAlert');let current=0;
+function alertMessage(msg){alertBox.textContent=msg;alertBox.hidden=false;alertBox.scrollIntoView({behavior:'smooth',block:'center'});}
+function toggle(){for(const [id,trigger] of [['transportOptions','transportRequired'],['healthDetails','hasHealthCondition'],['learningDetails','hasLearningDifficulties']]){const group=document.getElementById(id),yes=form.querySelector(`[name="${trigger}"]:checked`)?.value==='نعم';group.hidden=!yes;group.querySelectorAll('input,select,textarea').forEach(el=>{el.disabled=!yes;el.required=yes;});}}
+function view(n){current=n;steps.forEach((s,i)=>s.classList.toggle('active',i===n));prev.hidden=n===0;next.hidden=n===steps.length-1;finish.hidden=n!==steps.length-1;document.getElementById('stepTitle').textContent=`الخطوة ${n+1} من ${steps.length} — ${names[n]}`;document.getElementById('progressValue').textContent=Math.round((n+1)/steps.length*100)+'%';document.getElementById('progressBar').style.width=(n+1)/steps.length*100+'%';window.scrollTo({top:0,behavior:'smooth'});}
+function validateStep(n){alertBox.hidden=true;const els=[...steps[n].querySelectorAll('input,select,textarea')].filter(el=>!el.disabled),groups=new Set();for(const el of els){el.classList.remove('invalid');if(el.type==='checkbox'&&el.required&&!el.checked){el.classList.add('invalid');alertMessage('يرجى الموافقة على جميع التعهدات والإقرارات قبل إرسال الطلب.');el.focus();return false;}if(el.type==='radio'){if(groups.has(el.name))continue;groups.add(el.name);if(el.required&&!els.some(x=>x.name===el.name&&x.checked)){alertMessage('من فضلك اختار إجابة: '+(el.closest('fieldset')?.querySelector('legend')?.textContent||el.name));el.focus();return false;}}else if(el.required&&typeof el.value==='string'&&!el.value.trim()&&el.type!=='checkbox'){el.classList.add('invalid');alertMessage('من فضلك املا الحقل: '+(el.closest('label')?.textContent||el.name).replace('*','').trim());el.focus();return false;}else if(!el.checkValidity()){el.classList.add('invalid');el.reportValidity();return false;}}return true;}
+function allValid(){for(let i=0;i<steps.length;i++){if(!validateStep(i)){view(i);setTimeout(()=>alertBox.scrollIntoView({behavior:'smooth',block:'center'}),200);return false;}}return true;}
+document.querySelectorAll('[data-toggle]').forEach(el=>el.addEventListener('change',toggle));toggle();
+next.addEventListener('click',()=>{if(validateStep(current))view(current+1)});prev.addEventListener('click',()=>view(current-1));
+finish.addEventListener('click',()=>{if(!allValid())return;completion.hidden=false;completion.scrollIntoView({behavior:'smooth',block:'center'});});
+document.getElementById('backToEdit').addEventListener('click',()=>{completion.hidden=true;view(steps.length-1)});
+['printBtn','printComplete'].forEach(id=>document.getElementById(id).addEventListener('click',()=>window.print()));
+form.addEventListener('submit',e=>{e.preventDefault();if(allValid())completion.hidden=false;});
+})();
+
+
+// Google Maps location linking (no API key needed for this static site).
+(()=>{
+ const locationBtn=document.getElementById('useMyLocation');
+ const field=document.getElementById('googleMapsUrl');
+ const status=document.getElementById('locationStatus');
+ if(!locationBtn || !field)return;
+ locationBtn.addEventListener('click',()=>{
+  if(!navigator.geolocation){status.textContent='المتصفح لا يدعم تحديد الموقع. افتح خرائط Google وانسخ الرابط يدويًا.';return;}
+  status.textContent='جاري تحديد موقعك...';locationBtn.disabled=true;
+  navigator.geolocation.getCurrentPosition(position=>{
+   const latitude=position.coords.latitude.toFixed(6),longitude=position.coords.longitude.toFixed(6);
+   field.value=`https://www.google.com/maps?q=${latitude},${longitude}`;
+   status.textContent='تم وضع رابط موقعك الحالي. راجعه على الخريطة قبل المتابعة.';
+   locationBtn.disabled=false;
+  },err=>{
+   status.textContent=err.code===1?'لم يتم السماح بتحديد الموقع. افتح Google Maps وانسخ رابط المكان.':'تعذر تحديد موقعك. يمكنك نسخ رابط المكان من Google Maps.';
+   locationBtn.disabled=false;
+  },{enableHighAccuracy:true,timeout:12000,maximumAge:0});
+ });
+})();
