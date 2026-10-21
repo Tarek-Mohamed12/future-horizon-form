@@ -13,3 +13,25 @@ document.getElementById('backToEdit').addEventListener('click',()=>{completion.h
 ['printBtn','printComplete'].forEach(id=>document.getElementById(id).addEventListener('click',()=>window.print()));
 form.addEventListener('submit',e=>{e.preventDefault();if(allValid())completion.hidden=false;});
 })();
+
+
+// Google Maps location linking (no API key needed for this static site).
+(()=>{
+ const locationBtn=document.getElementById('useMyLocation');
+ const field=document.getElementById('googleMapsUrl');
+ const status=document.getElementById('locationStatus');
+ if(!locationBtn || !field)return;
+ locationBtn.addEventListener('click',()=>{
+  if(!navigator.geolocation){status.textContent='المتصفح لا يدعم تحديد الموقع. افتح خرائط Google وانسخ الرابط يدويًا.';return;}
+  status.textContent='جاري تحديد موقعك...';locationBtn.disabled=true;
+  navigator.geolocation.getCurrentPosition(position=>{
+   const latitude=position.coords.latitude.toFixed(6),longitude=position.coords.longitude.toFixed(6);
+   field.value=`https://www.google.com/maps?q=${latitude},${longitude}`;
+   status.textContent='تم وضع رابط موقعك الحالي. راجعه على الخريطة قبل المتابعة.';
+   locationBtn.disabled=false;
+  },err=>{
+   status.textContent=err.code===1?'لم يتم السماح بتحديد الموقع. افتح Google Maps وانسخ رابط المكان.':'تعذر تحديد موقعك. يمكنك نسخ رابط المكان من Google Maps.';
+   locationBtn.disabled=false;
+  },{enableHighAccuracy:true,timeout:12000,maximumAge:0});
+ });
+})();
