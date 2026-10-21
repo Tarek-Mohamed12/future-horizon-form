@@ -74,3 +74,77 @@ fieldset.field { min-inline-size:0; }
   html, body {overflow:visible;}
   .actions {display:none!important;}
 }
+/* Center school logo – desktop and mobile */
+.topbar-content {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    min-height: 110px;
+    padding-block: 12px;
+}
+
+.topbar-content .brand {
+    display: flex;
+    flex: 0 1 auto;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    text-decoration: none;
+}
+
+.school-logo {
+    display: block;
+    width: 220px;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.topbar-content .back-link {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .topbar-content {
+        min-height: 90px;
+        flex-direction: column;
+        justify-content: center;
+        flex-wrap: nowrap;
+        gap: 6px;
+        padding-block: 12px;
+    }
+
+    .school-logo { width: 150px; }
+
+    .topbar-content .back-link {
+        position: static;
+        transform: none;
+        font-size: 11px;
+        align-self: center;
+    }
+}
+
+@media (max-width: 360px) {
+    .school-logo { width: 135px; }
+}
+
+
+/* Grade / nationality selectors and Google Maps controls */
+.field select { min-width:0; max-width:100%; }
+.maps-tools {min-width:0;width:100%;margin-top:2px;}
+.maps-buttons {display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;}
+.maps-buttons .btn {display:inline-flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;line-height:1.5;min-height:46px;}
+.maps-tools > .field {width:100%;min-width:0;}
+.maps-tools input[type=url] {direction:ltr;text-align:left;font-size:14px;max-width:100%;}
+.map-help {margin:8px 0 0;color:#64748b;font-size:12px;line-height:1.8;}
+.map-status {min-height:0;margin:6px 0 0;color:#25664a;font-size:12px;}
+@media(max-width:740px){.maps-buttons{flex-direction:column}.maps-buttons .btn{width:100%;white-space:normal}.maps-tools input[type=url]{font-size:16px;}}
+@media print {.maps-buttons,.map-help,.map-status{display:none!important}}
